@@ -9,7 +9,7 @@ if (!isset($_GET['id'])) {
 }
 
 $id = $_GET['id'];
-$worker = $ctrl->getWorkerByIdExotic($id);
+$worker = $ctrl->getWorkerById($id);
 
 if (!$worker) {
     echo "Trabajador no encontrado.";
@@ -26,9 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'price' => $_POST['price'] ?? '',
     ];
 
-    $ctrl->updateWorkerExotic($id, $updatedData);
+    $ctrl->updateWorker($id, $updatedData);
     echo "Información actualizada correctamente.";
     // Redireccionar o mostrar confirmación
+    header("Location: ../../index.php");
     exit;
 }
 ?>

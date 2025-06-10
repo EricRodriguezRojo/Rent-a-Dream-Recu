@@ -62,12 +62,15 @@
                 <form action="../../../controller/usercontroller.php" class="form" method="POST" enctype="multipart/form-data">
                     <input required class="input" type="text" name="name" id="name" placeholder="name">
                     <input required class="input" type="number" name="age" id="age" min="18" max="120" placeholder="age">
-                    <input required class="input" type="number" name="height" id="height" placeholder="height">
+                    <input required class="input" type="number" step="0.01" name="height" id="height" placeholder="Height">
                     <input required class="input" type="text" name="description" id="description" placeholder="description">
                     <input required class="input" type="number" name="rating" id="rating" step="0.01" min="1" max="5" placeholder="rating">
                     <input required class="input" type="email" name="email" id="email" placeholder="E-mail">
                     <input required class="input" type="number" name="price" id="price" step="0.01" placeholder="price">
-                    <input class="login-button" type="submit" name="insertWorkerMan" value="insert Worker">
+                    <?php
+                    $_POST['tipo'] = 'girl';
+                    ?>
+                    <input class="login-button" type="submit" name="insertWorker" value="insertWorker">
                 </form>
             </div>
         </div>
