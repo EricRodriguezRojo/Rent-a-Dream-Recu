@@ -199,7 +199,7 @@ $workers = $ctrl->listWorkersExotic();
                                     <p>Actualizar</p>
                                 </a>
                                 <form action="../controller/usercontroller.php" method="POST" onsubmit="return confirm('¿Estás seguro de que quieres eliminar este trabajador? Esta acción no se puede deshacer.');">
-                                    <input type="hidden" name="deleteWorkerExotic" value="<?= $w['idWorker'] ?>">
+                                    <input type="hidden" name="deleteWorker" value="<?= $w['idWorker'] ?>">
                                     <button type="submit" style="margin-top: 1.4rem; background:none; border:none; color:red; cursor:pointer; padding:0; font-size:1em;">
                                         Eliminar
                                     </button>

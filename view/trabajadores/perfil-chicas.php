@@ -9,7 +9,7 @@ if (!isset($_GET['id'])) {
 }
 
 $id = $_GET['id'];
-$worker = $ctrl->getWorkerByIdGirl($id);
+$worker = $ctrl->getWorkerById($id);
 
 if (!$worker) {
     echo "Trabajador no encontrado.";

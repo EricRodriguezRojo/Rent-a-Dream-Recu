@@ -9,8 +9,7 @@ if (!isset($_GET['id'])) {
 }
 
 $id = $_GET['id'];
-$worker = $ctrl->getWorkerByIdGirl($id);
-
+$worker = $ctrl->getWorkerById($id);
 if (!$worker) {
     echo "Trabajador no encontrado.";
     exit;
@@ -26,9 +25,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'price' => $_POST['price'] ?? '',
     ];
 
-    $ctrl->updateWorkerGirl($id, $updatedData);
+    $ctrl->updateWorker($id, $updatedData);
     echo "Información actualizada correctamente.";
     // Redireccionar o mostrar confirmación
+    header("Location: ../../index.php");
     exit;
 }
 ?>

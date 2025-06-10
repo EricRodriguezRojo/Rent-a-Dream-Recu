@@ -37,23 +37,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["deleteAccount"])) {
         $user->deleteAccount();
     }
-    if (isset($_POST["deleteWorkerMan"])) {
-        $user->deleteWorkerMan();
+    if (isset($_POST["deleteWorker"])) {
+        $user->deleteWorker();
     }
-    if (isset($_POST["deleteWorkerGirl"])) {
-        $user->deleteWorkerGirl();
-    }
-    if (isset($_POST["deleteWorkerExotic"])) {
-        $user->deleteWorkerExotic();
-    }
-    if (isset($_POST["insertWorkerMan"])) {
-        $user->insertWorkerMan();
-    }
-    if (isset($_POST["insertWorkerGirl"])) {
-        $user->insertWorkerGirl();
-    }
-    if (isset($_POST["insertWorkerExotic"])) {
-        $user->insertWorkerExotic();
+
+    if (isset($_POST["insertWorker"])) {
+        $user->insertWorker();
     }
 }
 
@@ -121,44 +110,33 @@ class usercontroller
     public function listWorkersGirls()
     {
         // 2) Saca todos los registros de workergirl
-        $stmt = $this->pdo->query("SELECT idWorker, name, age, height, description, rating, price FROM workergirl");
+        $stmt = $this->pdo->query("SELECT idWorker, name, age, height, description, rating, price FROM workers WHERE tipo = 'girl';");
         return $stmt->fetchAll();
     }
     public function listWorkersMan()
     {
         // 2) Saca todos los registros de workerman
-        $stmt = $this->pdo->query("SELECT idWorker, name, age, height, description, rating, price FROM workerman");
+        $stmt = $this->pdo->query("SELECT idWorker, name, age, height, description, rating, price FROM workers WHERE tipo = 'man';");
         return $stmt->fetchAll();
     }
     public function listWorkersExotic()
     {
         // 2) Saca todos los registros de workerexotic
-        $stmt = $this->pdo->query("SELECT idWorker, name, age, height, description, rating, price FROM workerexotic");
+        $stmt = $this->pdo->query("SELECT idWorker, name, age, height, description, rating, price FROM workers WHERE tipo = 'exotic';");
         return $stmt->fetchAll();
     }
 
     public function getWorkerById($id)
     {
-        $stmt = $this->pdo->prepare("SELECT * FROM workerman WHERE idWorker = ?");
+        $stmt = $this->pdo->prepare("SELECT * FROM workers WHERE idWorker = ?");
         $stmt->execute([$id]);
         return $stmt->fetch(PDO::FETCH_ASSOC);
     }
-    public function getWorkerByIdGirl($id)
-    {
-        $stmt = $this->pdo->prepare("SELECT * FROM workergirl WHERE idWorker = ?");
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
-    public function getWorkerByIdExotic($id)
-    {
-        $stmt = $this->pdo->prepare("SELECT * FROM workerexotic WHERE idWorker = ?");
-        $stmt->execute([$id]);
-        return $stmt->fetch(PDO::FETCH_ASSOC);
-    }
+   
 
-    public function insertWorkerMan()
+    public function insertWorker()
     {
-        if (isset($_POST['insertWorkerMan'])) {
+        if (isset($_POST['insertWorker'])) {
             // Recoger datos del formulario
             $name = $_POST['name'];
             $age = $_POST['age'];
@@ -166,82 +144,13 @@ class usercontroller
             $description = $_POST['description'];
             $rating = $_POST['rating'];
             $price = $_POST['price'];
+            $tipo = $_POST['tipo'];
             // Llamar a la función de inserción
             try {
                  $stmt = $this->pdo->prepare("
-                INSERT INTO workerman 
-                (name, age, height, description, rating, price) 
-                VALUES (:name, :age, :height, :description, :rating, :price)
-            ");
-
-            $stmt->execute([
-                ':name' => $name,
-                ':age' => $age,
-                ':height' => $height,
-                ':description' => $description,
-                ':rating' => $rating,
-                ':price' => $price
-            ]);
-
-            header("Location: ../view/index.php");
-            exit();
-                
-            } catch (PDOException $e) {
-                echo "Error al insertar trabajador: " . $e->getMessage();
-            }
-        }
-    }
-    public function insertWorkerGirl()
-    {
-        if (isset($_POST['insertWorkerGirl'])) {
-            // Recoger datos del formulario
-            $name = $_POST['name'];
-            $age = $_POST['age'];
-            $height = $_POST['height'];
-            $description = $_POST['description'];
-            $rating = $_POST['rating'];
-            $price = $_POST['price'];
-            // Llamar a la función de inserción
-            try {
-                 $stmt = $this->pdo->prepare("
-                INSERT INTO workergirl 
-                (name, age, height, description, rating, price) 
-                VALUES (:name, :age, :height, :description, :rating, :price)
-            ");
-
-            $stmt->execute([
-                ':name' => $name,
-                ':age' => $age,
-                ':height' => $height,
-                ':description' => $description,
-                ':rating' => $rating,
-                ':price' => $price
-            ]);
-
-            header("Location: ../view/index.php");
-            exit();
-                
-            } catch (PDOException $e) {
-                echo "Error al insertar trabajador: " . $e->getMessage();
-            }
-        }
-    }
-    public function insertWorkerExotic()
-    {
-        if (isset($_POST['insertWorkerExotic'])) {
-            // Recoger datos del formulario
-            $name = $_POST['name'];
-            $age = $_POST['age'];
-            $height = $_POST['height'];
-            $description = $_POST['description'];
-            $rating = $_POST['rating'];
-            $price = $_POST['price'];
-            // Llamar a la función de inserción
-            try {
-                 $stmt = $this->pdo->prepare("
-                INSERT INTO workerexotic 
-                (name, age, height, description, rating, price) 
-                VALUES (:name, :age, :height, :description, :rating, :price)
+                INSERT INTO workers 
+                (name, age, height, description, rating, price, tipo) 
+                VALUES (:name, :age, :height, :description, :rating, :price, 'man')
             ");
 
             $stmt->execute([
@@ -262,11 +171,11 @@ class usercontroller
         }
     }
 
-    public function updateWorkerMan($id, $data): bool
+    public function updateWorker($id, $data): bool
     {
         try {
             $stmt = $this->pdo->prepare("
-            UPDATE workerman
+            UPDATE workers
             SET name = :name,
                 age = :age,
                 height = :height,
@@ -288,73 +197,22 @@ class usercontroller
             return false;
         }
     }
-    public function updateWorkerGirl($id, $data): bool
-    {
-        try {
-            $stmt = $this->pdo->prepare("
-            UPDATE workergirl
-            SET name = :name,
-                age = :age,
-                height = :height,
-                description = :description,
-                price = :price
-                WHERE idWorker = :id
-        ");
-
-            $stmt->bindParam(':name', $data['name']);
-            $stmt->bindParam(':age', $data['age'], PDO::PARAM_INT);
-            $stmt->bindParam(':height', $data['height'], PDO::PARAM_INT);
-            $stmt->bindParam(':description', $data['description']);
-            $stmt->bindParam(':price', $data['price']);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-            return $stmt->execute();
-        } catch (PDOException $e) {
-            error_log("Error al actualizar trabajador: " . $e->getMessage());
-            return false;
-        }
-    }
-    public function updateWorkerExotic($id, $data): bool
-    {
-        try {
-            $stmt = $this->pdo->prepare("
-            UPDATE workerexotic
-            SET name = :name,
-                age = :age,
-                height = :height,
-                description = :description,
-                price = :price
-                WHERE idWorker = :id
-        ");
-
-            $stmt->bindParam(':name', $data['name']);
-            $stmt->bindParam(':age', $data['age'], PDO::PARAM_INT);
-            $stmt->bindParam(':height', $data['height'], PDO::PARAM_INT);
-            $stmt->bindParam(':description', $data['description']);
-            $stmt->bindParam(':price', $data['price']);
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-
-            return $stmt->execute();
-        } catch (PDOException $e) {
-            error_log("Error al actualizar trabajador: " . $e->getMessage());
-            return false;
-        }
-    }
+ 
 
     
-    public function deleteWorkerMan(): void
+    public function deleteWorker(): void
     {
         // Verificar que el ID venga en POST
-        if (!isset($_POST['deleteWorkerMan']) || empty($_POST['deleteWorkerMan'])) {
+        if (!isset($_POST['deleteWorker']) || empty($_POST['deleteWorker'])) {
             // Puedes redirigir o lanzar error
             die("ID de trabajador no especificado.");
         }
 
-        $id = $_POST['deleteWorkerMan'];
+        $id = $_POST['deleteWorker'];
 
         try {
             // Preparar la consulta DELETE
-            $stmt = $this->pdo->prepare("DELETE FROM workerman WHERE idWorker = :id");
+            $stmt = $this->pdo->prepare("DELETE FROM workers WHERE idWorker = :id");
             $stmt->bindParam(':id', $id, PDO::PARAM_INT);
             $stmt->execute();
 
@@ -363,70 +221,6 @@ class usercontroller
                 // Eliminado correctamente
                 // Puedes redirigir a una página con mensaje o mostrar confirmación
                 header("Location: ../view/chicos.php?msg=El trabajador ha sido eliminado correctamente");
-                exit();
-            } else {
-                // No se encontró el trabajador con ese ID
-                die("No se encontró el trabajador para eliminar.");
-            }
-        } catch (PDOException $e) {
-            // Manejar errores
-            error_log("Error al eliminar trabajador: " . $e->getMessage());
-            die("Error al eliminar el trabajador.");
-        }
-    }
-    public function deleteWorkerGirl(): void
-    {
-        // Verificar que el ID venga en POST
-        if (!isset($_POST['deleteWorkerGirl']) || empty($_POST['deleteWorkerGirl'])) {
-            // Puedes redirigir o lanzar error
-            die("ID de trabajador no especificado.");
-        }
-
-        $id = $_POST['deleteWorkerGirl'];
-
-        try {
-            // Preparar la consulta DELETE
-            $stmt = $this->pdo->prepare("DELETE FROM workergirl WHERE idWorker = :id");
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->execute();
-
-            // Verificar si se eliminó algún registro
-            if ($stmt->rowCount() > 0) {
-                // Eliminado correctamente
-                // Puedes redirigir a una página con mensaje o mostrar confirmación
-                header("Location: ../view/chicas.php?msg=El trabajador ha sido eliminado correctamente");
-                exit();
-            } else {
-                // No se encontró el trabajador con ese ID
-                die("No se encontró el trabajador para eliminar.");
-            }
-        } catch (PDOException $e) {
-            // Manejar errores
-            error_log("Error al eliminar trabajador: " . $e->getMessage());
-            die("Error al eliminar el trabajador.");
-        }
-    }
-    public function deleteWorkerExotic(): void
-    {
-        // Verificar que el ID venga en POST
-        if (!isset($_POST['deleteWorkerExotic']) || empty($_POST['deleteWorkerExotic'])) {
-            // Puedes redirigir o lanzar error
-            die("ID de trabajador no especificado.");
-        }
-
-        $id = $_POST['deleteWorkerExotic'];
-
-        try {
-            // Preparar la consulta DELETE
-            $stmt = $this->pdo->prepare("DELETE FROM workerexotic WHERE idWorker = :id");
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $stmt->execute();
-
-            // Verificar si se eliminó algún registro
-            if ($stmt->rowCount() > 0) {
-                // Eliminado correctamente
-                // Puedes redirigir a una página con mensaje o mostrar confirmación
-                header("Location: ../view/exotico.php?msg=El trabajador ha sido eliminado correctamente");
                 exit();
             } else {
                 // No se encontró el trabajador con ese ID
