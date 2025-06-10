@@ -57,7 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-class UserController
+class usercontroller
 {
     private $pdo;
     private $usersTable = "users";
@@ -117,6 +117,7 @@ class UserController
         echo "Error al crear la tabla 'usuarios': " . $e->getMessage();
     }
 }
+
     public function listWorkersGirls()
     {
         // 2) Saca todos los registros de workergirl
