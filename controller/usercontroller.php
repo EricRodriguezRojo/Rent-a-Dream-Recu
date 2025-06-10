@@ -290,6 +290,12 @@ class usercontroller
             exit();
         }
 
+        if (!preg_match('/^(?=.*\d)[A-Za-z\d]{6}$/', $password))
+        {
+            header("Location: ../view/sign_up.html");
+            exit();
+        }
+        
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $_SESSION['error'] = "Email inválido";
             header("Location: ../view/sign_up.html");
