@@ -178,6 +178,7 @@ if (!isset($_SESSION["activeUser"])) {
       <p><strong>Email:</strong> <?= htmlspecialchars($_SESSION['email'] ?? 'usuario@ejemplo.com') ?></p>
       <p><strong>Número de Telefono:</strong> <?= htmlspecialchars($_SESSION['phonenumber'] ?? '34666555444') ?></p>
 
+      
       <form action="../controller/usercontroller.php" method="POST">
         <button class="btn-logout" name="logout" type="submit">Cerrar Sesión</button>
       </form>
