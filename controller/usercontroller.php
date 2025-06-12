@@ -98,7 +98,8 @@ class usercontroller
                 email VARCHAR(45) NOT NULL,
                 password VARCHAR(400) NOT NULL,
                 rol VARCHAR(50) NOT NULL,
-                dni VARCHAR(50) NOT NULL
+                dni VARCHAR(50) NOT NULL,
+                phonenumber VARCHAR(11) NOT NULL
             ) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
         ";
         $this->pdo->exec($sql);
@@ -281,15 +282,24 @@ class usercontroller
         $password = $_POST['password'] ?? '';
         $rol = $_POST["rol"] ?? 'user';
         $dni = $_POST["dni"] ?? '';
+        $phonenumber = $_POST["phonenumber"];
         $usersTable = $this->usersTable;
 
         // Validaciones
-        if (empty($username) || empty($email) || empty($password)) {
+        if (empty($username) || empty($email) || empty($password) || empty($phonenumber)) {
             $_SESSION['error'] = "Todos los campos son requeridos";
             header("Location: ../view/sign_up.html");
             exit();
         }
 
+        if (!preg_match('/^\\+?[1-9][0-9]{10}$/', $phonenumber))
+        {
+            $_SESSION['error'] = "El numero de telefono tiene que ser de 11 numeros";
+            echo "numero";
+            //header("Location: ../view/sign_up.html");
+            exit();
+        }
+        
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $_SESSION['error'] = "Email inválido";
             header("Location: ../view/sign_up.html");
@@ -313,8 +323,8 @@ class usercontroller
 
             $stmt = $this->pdo->prepare("
                 INSERT INTO $usersTable 
-                (name, email, password, rol, dni) 
-                VALUES (:name, :email, :password, :rol, :dni)
+                (name, email, password, rol, dni, phonenumber) 
+                VALUES (:name, :email, :password, :rol, :dni, :phonenumber)
             ");
 
             $stmt->execute([
@@ -322,7 +332,8 @@ class usercontroller
                 ':email' => $email,
                 ':password' => $passwordHash,
                 ':rol' => $rol,
-                ':dni' => $dni
+                ':dni' => $dni,
+                ':phonenumber' => $phonenumber
             ]);
 
             $_SESSION['logged'] = true;
@@ -330,6 +341,7 @@ class usercontroller
             $_SESSION['email'] = $email;
             $_SESSION['rol'] = $rol;
             $_SESSION['dni'] = $dni;
+            $_SESSION['phonenumber'] = $phonenumber ;
 
             header("Location: ../view/index.php");
             exit();
